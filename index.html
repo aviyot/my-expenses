@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <title>My Expenses</title>
+</head>
+
+<body id="body">
+    <div id="main-app" class="container">
+        <div class="">
+            <form id="form" class="container bg-light">
+                <div class="container">
+                    <div class="row">
+
+                        <h2 class="col-10 text-center bg-primary p-2 text-white">Monthly Expense</h2>
+                        <div class="col  bg-primary">
+                            <button type="button" id="showForm" class="btn btn-success">
+                                <i class="fa fa-plus fa-lg" aria-hidden="true"></i>
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+                <div id="inputSection" class="row d-none">
+                    <div class="form-group col">
+                        <label for="name">Expense</label>
+                        <input class="form-control" value="" type="text" id="name" required placeholder="expense name">
+                    </div>
+                    <div class="form-group col">
+                        <label for="amount">Amount</label>
+                        <input class="form-control" value="" type="number" id="amount" required
+                            placeholder="expense amount">
+                    </div>
+
+                    <div class="form-group col">
+                        <label for="freq">Frequency</label>
+                        <input id="freq" class="form-control" type="number" name="" value="1" placeholder="frequency">
+                    </div>
+                    <div class="container">
+                        <button type="submit" id="addBtn" class="btn btn-success">
+                            <i class="fa fa-plus fa-lg" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" id="saveBtn" class="btn btn-success d-none">
+                            <i class="fas fa-save"></i> </button>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+        <div class="addTable container d-none">
+            <table class="table table-sm table-hover">
+                <thead class="sticky-top bg-primary">
+                    <tr class="text-white">
+                        <th scope="col">#</th>
+                        <th scope="col">Expense</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Frequency</th>
+                        <th scope="col">Total</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody" class="">
+                </tbody>
+            </table>
+            <div id="total" class="container card fixed-bottom bg-dark text-white">
+                <div class="row">
+                    <div class="col">
+                        Total Amount :
+                        <span id="totalAmount">
+                        </span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="edit" class="position-fixed  bg-light d-none">
+        <div id="btnAction" class="d-none">
+            <button id="btnUpdate" type="button" class="btn">
+                <i class="fa fa-pencil text-primary" aria-hidden="true"></i>
+            </button>
+            <button id="btnRemove" type="button" class="btn">
+                <i class="fa fa-times text-danger" aria-hidden="true"></i>
+            </button>
+        </div>
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/1faecccd72.js" crossorigin="anonymous"></script>
+    <script type="module" src="main.js"></script>
+</body>
+
+</html>
