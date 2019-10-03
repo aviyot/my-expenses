@@ -1,0 +1,2 @@
+# my-expenses
+Expenses manager
