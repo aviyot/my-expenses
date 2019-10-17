@@ -17,29 +17,29 @@
         <div class="">
             <form id="form" class="container bg-light">
                 <div class="container">
-                    <div class="row">
-                        <div class="col-10 text-center bg-primary p-2 text-white" style="text-align: left">Monthly
+                    <div class="row bg-success">
+                        <div class="col-10 text-left  p-2 text-white" style="font-size:1.5rem">Monthly
                             Expense</div>
-                        <div class="col-2">
-                            <button type="button" id="showForm" class="btn btn-success">
-                                <i class="fa fa-plus " aria-hidden="true"></i>
+                        <div class="col-2 text-right">
+                            <button type="button" id="showForm" class="btn text-white" style="text-align: reight">
+                                <i class="fa fa-plus fa-lg" aria-hidden="true"></i>
                             </button>
                         </div>
 
                     </div>
                 </div>
                 <div id="inputSection" class="row d-none">
-                    <div class="form-group col">
+                    <div class="form-group col-6">
                         <label for="name">Expense</label>
                         <input class="form-control" value="" type="text" id="name" required placeholder="expense name">
                     </div>
-                    <div class="form-group col">
+                    <div class="form-group col-4">
                         <label for="amount">Amount</label>
                         <input class="form-control" value="" type="number" id="amount" required
                             placeholder="expense amount">
                     </div>
 
-                    <div class="form-group col">
+                    <div class="form-group col-2">
                         <label for="freq">Frequency</label>
                         <input id="freq" class="form-control" type="number" name="" value="1" placeholder="frequency">
                     </div>
@@ -68,9 +68,9 @@
                 <tbody id="tbody" class="">
                 </tbody>
             </table>
-            <div id="total" class="container card fixed-bottom bg-dark text-white">
-                <div class="row">
-                    <div class="col">
+            <div id="total" class="container card fixed-bottom ">
+                <div class="row ">
+                    <div class="col bg-warning">
                         Total Amount :
                         <span id="totalAmount">
                         </span>
