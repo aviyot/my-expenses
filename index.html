@@ -13,22 +13,21 @@
 </head>
 
 <body id="body">
-    <div id="main-app" class="container">
-        <div class="">
-            <form id="form" class="container bg-light">
-                <div class="container">
+    <div id="main-app" class="container-fluid">
+        <div>
+            <form id="form" class="bg-light">
+                <div>
                     <div class="row bg-success">
                         <div class="col-10 text-left  p-2 text-white" style="font-size:1.5rem">Monthly
                             Expense</div>
-                        <div class="col-2 text-right">
+                        <div class="col-2 p-2 text-right">
                             <button type="button" id="showForm" class="btn text-white" style="text-align: reight">
                                 <i class="fa fa-plus fa-lg" aria-hidden="true"></i>
                             </button>
                         </div>
-
                     </div>
                 </div>
-                <div id="inputSection" class="row d-none">
+                <div id="inputSection" class="row d-none" style="overflow: hidden">
                     <div class="form-group col-6">
                         <label for="name">Expense</label>
                         <input class="form-control" value="" type="text" id="name" required placeholder="expense name">
@@ -54,7 +53,7 @@
                 </div>
             </form>
         </div>
-        <div class="addTable container d-none">
+        <div class="addTable d-none">
             <table class="table table-sm table-hover">
                 <thead class="sticky-top bg-primary">
                     <tr class="text-white">
@@ -68,7 +67,7 @@
                 <tbody id="tbody" class="">
                 </tbody>
             </table>
-            <div id="total" class="container card fixed-bottom ">
+            <div id="total" class="fixed-bottom">
                 <div class="row ">
                     <div class="col bg-warning">
                         Total Amount :
