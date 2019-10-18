@@ -1,6 +1,5 @@
 import { Expense } from "./modules/expense.js";
-
-document.body.onload = function() {
+window.onload = function() {
   //localStorage.removeItem("localExpenses");
   let expenses = null;
   let totalAmount = 0;
@@ -23,12 +22,38 @@ document.body.onload = function() {
   const saveBtn = document.querySelector("#saveBtn");
   const inputs = document.querySelectorAll("input");
 
+  const firebaseConfig = {
+    apiKey: "AIzaSyAKZ7KW44NYNem21ocPSnBHkKBlXaI4Lk8",
+    authDomain: "expense-fe336.firebaseapp.com",
+    databaseURL: "https://expense-fe336.firebaseio.com",
+    projectId: "expense-fe336",
+    storageBucket: "expense-fe336.appspot.com",
+    messagingSenderId: "1088239030058",
+    appId: "1:1088239030058:web:d3604342f00fff77989853",
+    measurementId: "G-7L21JJ5WRC"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
+
+  function writeToFirebase() {
+    firebase
+      .firestore()
+      .collection("expenses")
+      .add({
+        name: "bire",
+        amount: "300",
+        freq: "2"
+      });
+  }
+
   inputs.forEach(input => {
     input.addEventListener("keyup", () => {
       console.log("input changed");
       saveBtn.classList.remove("d-none");
     });
   });
+
   form.addEventListener("submit", onSubmit);
 
   btnRemove.addEventListener("click", removeExpense);
@@ -49,15 +74,47 @@ document.body.onload = function() {
     }
   });
 
-  expenses = JSON.parse(localStorage.getItem("localExpenses"));
-  if (expenses === null) {
-  } else {
-    expenses.forEach(item => {
-      totalAmount = totalAmount + item.total;
-    });
+  function getDataFromLocalStorage() {
+    expenses = JSON.parse(localStorage.getItem("localExpenses"));
+    if (expenses === null) {
+    } else {
+      expenses.forEach(item => {
+        totalAmount = totalAmount + item.total;
+      });
 
-    addToDom();
+      addToDom();
+    }
   }
+
+  //getDataFromLocalStorage();
+
+  function getDataFirestore() {
+    firebase
+      .firestore()
+      .collection("expenses")
+      .orderBy("amount", "desc")
+      .onSnapshot(snaps => {
+        // Loop through documents in database
+        snaps.forEach(doc => {
+          if (expenses == null) {
+            expenses = [];
+            expenses.push(doc.data());
+            totalAmount = totalAmount + Number(doc.amount) * Number(doc.freq);
+            console.log(doc.data());
+          } else {
+            expenses.push(doc.data());
+            totalAmount = totalAmount + Number(doc.amount) * Number(doc.freq);
+            console.log(doc.data());
+            //totalAmount = totalAmount + doc.total;
+          }
+        });
+
+        addToDom();
+      });
+  }
+
+  getDataFirestore();
+  // getDataFromLocalStorage();
 
   function addExpenses() {
     if (expenses === null) {
