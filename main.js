@@ -74,7 +74,8 @@ window.onload = function() {
     addBtn.classList.remove("d-none");
     showForm.classList.add("d-none");
     document.querySelector("#edit").classList.add("d-none");
-    tbody.childNodes[selectedIndex].classList.remove("bg-warning");
+    if (selectedIndex > 0)
+      tbody.childNodes[selectedIndex].classList.remove("bg-warning");
   }
 
   function beforeunloadHandler() {
@@ -141,31 +142,34 @@ window.onload = function() {
 
     tbody.textContent = null;
 
-    expenses.forEach((element, index) => {
-      let td = document.createElement("td");
-      let tr = document.createElement("tr");
-      tr.setAttribute("id", "exp" + index);
-      tr.addEventListener("click", onBodyClick);
+    if (expenses) {
+      expenses.forEach((element, index) => {
+        let td = document.createElement("td");
+        let tr = document.createElement("tr");
+        tr.setAttribute("id", "exp" + index);
+        tr.addEventListener("click", onBodyClick);
 
-      td.textContent = index + 1;
-      tr.appendChild(td);
-
-      const el = [];
-      for (const prop in element) {
-        if (prop == "name") el[0] = element[prop];
-        if (prop == "amount") el[1] = element[prop];
-        if (prop == "frequency") el[2] = element[prop];
-        if (prop == "total") el[3] = element[prop];
-      }
-
-      el.forEach(element => {
-        td = document.createElement("td");
-        td.textContent = element;
+        td.textContent = index + 1;
         tr.appendChild(td);
-      });
 
-      tbody.appendChild(tr);
-    });
+        const el = [];
+        for (const prop in element) {
+          if (prop == "name") el[0] = element[prop];
+          if (prop == "amount") el[1] = element[prop];
+          if (prop == "frequency") el[2] = element[prop];
+          if (prop == "total") el[3] = element[prop];
+        }
+
+        el.forEach(element => {
+          td = document.createElement("td");
+          td.textContent = element;
+          tr.appendChild(td);
+        });
+
+        tbody.appendChild(tr);
+      });
+    }
+
     totalAmountDiv.textContent = totalAmount;
     showForm.classList.remove("d-none");
   }
