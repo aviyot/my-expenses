@@ -1,10 +1,12 @@
 import { Expense } from "./modules/expense.js";
+
 window.onload = function() {
   //localStorage.removeItem("localExpenses");
   let expenses = null;
   let totalAmount = 0;
   let selectedIndex = -1;
 
+  const body = document.querySelector("#body");
   const form = document.querySelector("#form");
   const name = document.querySelector("#name");
   const amount = document.querySelector("#amount");
@@ -20,7 +22,7 @@ window.onload = function() {
   const inputSection = document.querySelector("#inputSection");
   const showForm = document.querySelector("#showForm");
   const saveBtn = document.querySelector("#saveBtn");
-  const inputs = document.querySelectorAll("input");
+  const inputs = document.querySelectorAll("#inputSection input");
 
   const firebaseConfig = {
     apiKey: "AIzaSyAKZ7KW44NYNem21ocPSnBHkKBlXaI4Lk8",
@@ -36,43 +38,50 @@ window.onload = function() {
   firebase.initializeApp(firebaseConfig);
   firebase.analytics();
 
-  function writeToFirebase() {
+  getDataFirestore();
+
+  function addToFirebase(addedexpense) {
     firebase
       .firestore()
       .collection("expenses")
-      .add({
-        name: "bire",
-        amount: "300",
-        freq: "2"
+      .doc(`${addedexpense.id}`)
+      .set({
+        id: addedexpense.id,
+        name: addedexpense.name,
+        amount: addedexpense.amount,
+        frequency: addedexpense.frequency,
+        total: addedexpense.total
       });
   }
 
   inputs.forEach(input => {
-    input.addEventListener("keyup", () => {
-      console.log("input changed");
-      saveBtn.classList.remove("d-none");
-    });
+    input.addEventListener("keyup", inputChangeHandler);
   });
 
   form.addEventListener("submit", onSubmit);
-
   btnRemove.addEventListener("click", removeExpense);
   btnUpdate.addEventListener("click", putToEdit);
-  showForm.addEventListener("click", () => {
+  showForm.addEventListener("click", formShowClickHandler);
+  saveBtn.addEventListener("click", update);
+  window.addEventListener("beforeunload", beforeunloadHandler);
+
+  function inputChangeHandler() {
+    saveBtn.classList.remove("d-none");
+  }
+
+  function formShowClickHandler() {
     inputSection.classList.remove("d-none");
     addBtn.classList.remove("d-none");
     showForm.classList.add("d-none");
     document.querySelector("#edit").classList.add("d-none");
     tbody.childNodes[selectedIndex].classList.remove("bg-warning");
-  });
+  }
 
-  saveBtn.addEventListener("click", update);
-
-  window.addEventListener("beforeunload", function() {
+  function beforeunloadHandler() {
     if (expenses !== null) {
       localStorage.setItem("localExpenses", JSON.stringify(expenses));
     }
-  });
+  }
 
   function getDataFromLocalStorage() {
     expenses = JSON.parse(localStorage.getItem("localExpenses"));
@@ -86,35 +95,25 @@ window.onload = function() {
     }
   }
 
-  //getDataFromLocalStorage();
-
   function getDataFirestore() {
     firebase
       .firestore()
       .collection("expenses")
-      .orderBy("amount", "desc")
-      .onSnapshot(snaps => {
+      .get()
+      .then(snaps => {
         // Loop through documents in database
         snaps.forEach(doc => {
-          if (expenses == null) {
-            expenses = [];
-            expenses.push(doc.data());
-            totalAmount = totalAmount + Number(doc.amount) * Number(doc.freq);
-            console.log(doc.data());
-          } else {
-            expenses.push(doc.data());
-            totalAmount = totalAmount + Number(doc.amount) * Number(doc.freq);
-            console.log(doc.data());
-            //totalAmount = totalAmount + doc.total;
-          }
+          if (expenses == null) expenses = [];
+
+          expenses.push(doc.data());
+          totalAmount =
+            totalAmount +
+            Number(doc.data().amount) * Number(doc.data().frequency);
         });
 
         addToDom();
       });
   }
-
-  getDataFirestore();
-  // getDataFromLocalStorage();
 
   function addExpenses() {
     if (expenses === null) {
@@ -130,7 +129,10 @@ window.onload = function() {
     expenses.push(expense1);
 
     totalAmount += expense1.amountPerMonth();
+
     addToDom();
+
+    addToFirebase(expense1);
   }
 
   function addToDom() {
@@ -138,23 +140,29 @@ window.onload = function() {
     inputSection.classList.add("d-none");
 
     tbody.textContent = null;
+
     expenses.forEach((element, index) => {
       let td = document.createElement("td");
-      const tr = document.createElement("tr");
+      let tr = document.createElement("tr");
       tr.setAttribute("id", "exp" + index);
       tr.addEventListener("click", onBodyClick);
 
       td.textContent = index + 1;
       tr.appendChild(td);
 
+      const el = [];
       for (const prop in element) {
-        if (prop !== "id") {
-          //  console.log(prop);
-          td = document.createElement("td");
-          td.textContent = element[prop];
-          tr.appendChild(td);
-        }
+        if (prop == "name") el[0] = element[prop];
+        if (prop == "amount") el[1] = element[prop];
+        if (prop == "frequency") el[2] = element[prop];
+        if (prop == "total") el[3] = element[prop];
       }
+
+      el.forEach(element => {
+        td = document.createElement("td");
+        td.textContent = element;
+        tr.appendChild(td);
+      });
 
       tbody.appendChild(tr);
     });
@@ -168,7 +176,7 @@ window.onload = function() {
     name.value = expenses[selectedIndex].name;
     amount.value = expenses[selectedIndex].amount;
     frequency.value = expenses[selectedIndex].frequency;
-    saveBtn.classList.add("d-none");
+    saveBtn.classList.remove("d-none");
     addBtn.classList.add("d-none");
 
     document.querySelector("#edit").classList.add("d-none");
@@ -179,7 +187,8 @@ window.onload = function() {
     expenses[selectedIndex].name = name.value;
     expenses[selectedIndex].amount = amount.value;
     expenses[selectedIndex].frequency = frequency.value;
-    expenses[selectedIndex].total = expenses[selectedIndex].total;
+    expenses[selectedIndex].total =
+      Number(amount.value) * Number(frequency.value);
 
     totalAmount = totalAmount + expenses[selectedIndex].total;
     totalAmountDiv.textContent = totalAmount;
@@ -189,6 +198,23 @@ window.onload = function() {
 
     addToDom();
     form.reset();
+    updateInFirebase(expenses[selectedIndex]);
+  }
+
+  function updateInFirebase(key) {
+    firebase
+      .firestore()
+      .collection("expenses")
+      .doc(`${Number(key.id) + 1}`)
+      .update({
+        name: key.name,
+        amount: key.amount,
+        frequency: key.frequency,
+        total: key.total
+      })
+      .then(function() {
+        console.log("Document successfully updated!");
+      });
   }
 
   function updatePos() {
@@ -206,36 +232,32 @@ window.onload = function() {
     showForm.classList.remove("d-none");
     updatePos();
 
-    //remove previes style
-
-    /* const a = Number(event.currentTarget.offsetWidth);
-    const d = Number(event.clientY);
-    const b = Number(event.clientX);
-    const c = Number(document.querySelector("#edit").offsetWidth); */
-
     if (selectedIndex > -1 && tbody.childNodes[selectedIndex]) {
       tbody.childNodes[selectedIndex].classList.remove("bg-warning");
     }
     selectedIndex = event.currentTarget.id[3];
 
-    //document.querySelector("#edit").style.left = "0px";
-
-    //console.log(a, b, c, a - b);
-
-    /* if (a - b < c) {
-      document.querySelector("#edit").style.left = a - c + "px";
-    } */
-    //console.log(document.querySelector("#edit").offsetWidth);
     event.currentTarget.classList.add("bg-warning");
     event.currentTarget.classList.add("position-relative");
-
-    //putToEdit();
   }
 
+  function removeDocumentFromFirestore(key) {
+    firebase
+      .firestore()
+      .collection("expenses")
+      .doc(`${key}`)
+      .delete()
+      .then(function() {
+        console.log("Document successfully deleted!");
+      })
+      .catch(function(error) {
+        console.error("Error removing document: ", error);
+      });
+  }
   function removeExpense() {
-    console.log(expenses[selectedIndex].total);
     totalAmount = totalAmount - expenses[selectedIndex].total;
-    expenses.splice(selectedIndex, 1);
+    const deltedItem = expenses.splice(selectedIndex, 1);
+    removeDocumentFromFirestore(deltedItem[0].id);
     addToDom();
     totalAmountDiv.textContent = totalAmount;
     btnAction.classList.add("d-none");
