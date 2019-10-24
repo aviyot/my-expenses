@@ -9,11 +9,17 @@
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="style.css">
 
+    <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
+
     <title>My Expenses</title>
 </head>
 
 <body id="body">
-    <div id="main-app" class="container-fluid">
+
+    <div id="firebaseui-auth-container"></div>
+
+    <div id="main-app" class="container-fluid d-none">
         <div>
             <form id="form" class="bg-light">
                 <div>
