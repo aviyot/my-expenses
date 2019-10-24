@@ -39,21 +39,7 @@ window.onload = function() {
   firebase.analytics();
 
   // Initialize the FirebaseUI Widget using Firebase.
-  var ui = new firebaseui.auth.AuthUI(firebase.auth());
-  ui.start("#firebaseui-auth-container", {
-    signInOptions: [firebase.auth.EmailAuthProvider.PROVIDER_ID],
-    callbacks: {
-      signInSuccessWithAuthResult: function(authResult, redirectUrl) {
-        // User successfully signed in.
-        // Return type determines whether we continue the redirect automatically
-        // or whether we leave that to developer to handle.
-        document.querySelector("#main-app").classList.remove("d-none");
-        getDataFirestore();
-        return false;
-      }
-    }
-  });
-
+ 
   firebase
     .auth()
     .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
@@ -61,6 +47,22 @@ window.onload = function() {
       // Existing and future Auth states are now persisted in the current
       // session only. Closing the window would clear any existing state even
       // if a user forgets to sign out.
+
+      var ui = new firebaseui.auth.AuthUI(firebase.auth());
+      ui.start("#firebaseui-auth-container", {
+        signInOptions: [firebase.auth.EmailAuthProvider.PROVIDER_ID],
+        callbacks: {
+          signInSuccessWithAuthResult: function(authResult, redirectUrl) {
+            // User successfully signed in.
+            // Return type determines whether we continue the redirect automatically
+            // or whether we leave that to developer to handle.
+            document.querySelector("#main-app").classList.remove("d-none");
+            getDataFirestore();
+            return false;
+          }
+        }
+      });
+    
       // ...
       // New sign-in will be persisted with session persistence.
       return firebase.auth().signInWithEmailAndPassword(email, password);
